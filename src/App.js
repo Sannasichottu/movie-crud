@@ -1,0 +1,90 @@
+import './App.css';
+import { useState} from 'react';
+import MovieList from './movies/MovieList';
+import { Welcome } from './Welcome';
+import { AddMovie } from './movies/AddMovie';
+import {NotFound} from './NotFound'
+import { Switch, Route, Redirect, useHistory } from "react-router-dom";
+import { MovieDetails } from './movies/MovieDetails';
+import { EditMovie } from './movies/EditMovie';
+import AppBar from '@mui/material/AppBar';
+import Paper from '@mui/material/Paper';
+import { Button } from '@mui/material';
+import Toolbar from '@mui/material/Toolbar';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+
+
+export default function App() {
+  
+  const history = useHistory();
+  const [mode, setMode] = useState("dark");
+
+
+  const theme = createTheme({
+    palette: {
+      mode: mode,
+    },
+  });
+
+ 
+  return (
+    <ThemeProvider theme={theme}>
+      <Paper elevation={1} style={{borderRadius: "0px", minHeight: "100vh"}}>
+        <div className="App">
+          
+          <AppBar position="sticky">
+            <Toolbar variant="dense">
+              <Button variant="text" style={{color:"inherit"}} onClick={()=> history.push("./home")}>Home</Button>
+              <Button variant="text" style={{color:"inherit"}} onClick={()=> history.push("./movies")}>Movies</Button>
+              <Button variant="text" style={{color:"inherit"}} onClick={()=> history.push("./addmovies")}>Add Movies</Button>
+              <Button 
+                startIcon ={mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon /> }
+                variant="text" 
+                style={{marginLeft: "auto"}} 
+                color="inherit" 
+                onClick={() => setMode(mode ==='light'? 'dark' : 'light')}>  
+              {mode==='light'? 'Dark' : 'Light'} Mode</Button>
+            
+            </Toolbar>
+        </AppBar>
+        
+          <Switch>
+            <Route path="/films">
+              <Redirect to='/movies' />
+            </Route>
+
+            <Route path="/movies/edit/:id">
+              <EditMovie />
+            </Route>
+
+            <Route path="/movies/:id">
+              <MovieDetails />
+            </Route>
+
+          
+
+            <Route path="/movies">
+              <MovieList  /> 
+            </Route>
+
+            <Route path="/addmovies">
+                <AddMovie />
+            </Route>
+
+            <Route path="/">
+                <Welcome />
+            </Route>
+
+            <Route path="**">
+              <NotFound />
+            </Route>
+          </Switch>      
+        </div>
+        </Paper>
+     </ThemeProvider> 
+  );
+}
+
+
